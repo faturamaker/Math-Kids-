@@ -1,7 +1,7 @@
 (function (root) {
   'use strict';
   const OPERATIONS = Object.freeze(['addition', 'subtraction', 'multiplication', 'division']);
-  const DEFAULT_SETTINGS = Object.freeze({ min: 0, max: 10, maxSum: 10, operation: 'addition' });
+  const DEFAULT_SETTINGS = Object.freeze({ min: 0, max: 10, maxSum: 10, operations: ['addition'], voicePraise: true });
   const DEFAULT_PROGRESS = Object.freeze({ stars: 0, solved: 0, question: null, answer: '', answered: false });
 
   function calculate(a, b, operation) {
@@ -11,31 +11,39 @@
     if (operation === 'division' && b !== 0 && a % b === 0) return a / b;
     return null;
   }
-  function hasQuestion(s) {
+  function operationsOf(settings) {
+    const listed = Array.isArray(settings.operations) ? settings.operations : [settings.operation || 'addition'];
+    return [...new Set(listed.filter(operation => OPERATIONS.includes(operation)))];
+  }
+  function hasQuestion(s, operation) {
     for (let a = s.min; a <= s.max; a++) for (let b = s.min; b <= s.max; b++) {
-      const result = calculate(a, b, s.operation);
+      const result = calculate(a, b, operation);
       if (result !== null && result >= 0 && result <= s.maxSum) return true;
     }
     return false;
   }
   function isValidSettings(s) {
     if (!s || !Number.isInteger(s.min) || !Number.isInteger(s.max) || !Number.isInteger(s.maxSum)) return false;
-    const operation = s.operation || 'addition';
-    if (!OPERATIONS.includes(operation) || s.min < 0 || s.min > 99 || s.max < s.min || s.max > 99 || s.maxSum < 0 || s.maxSum > 198) return false;
-    return hasQuestion({ min: s.min, max: s.max, maxSum: s.maxSum, operation });
+    const operations = operationsOf(s);
+    if (!operations.length || s.min < 0 || s.min > 99 || s.max < s.min || s.max > 99 || s.maxSum < 0 || s.maxSum > 198) return false;
+    return operations.every(operation => hasQuestion(s, operation));
   }
   function normalizeSettings(s) {
-    const candidate = s && { min: s.min, max: s.max, maxSum: s.maxSum, operation: s.operation || 'addition' };
-    return isValidSettings(candidate) ? candidate : { ...DEFAULT_SETTINGS };
+    const candidate = s && { min: s.min, max: s.max, maxSum: s.maxSum, operations: operationsOf(s), voicePraise: s.voicePraise !== false };
+    return isValidSettings(candidate) ? candidate : { ...DEFAULT_SETTINGS, operations: [...DEFAULT_SETTINGS.operations] };
   }
-  function makeQuestion(settings, random) {
-    const c = normalizeSettings(settings), choices = [];
+  function makeQuestion(settings, random, previousOperation) {
+    const c = normalizeSettings(settings), rng = random || Math.random;
+    let operations = c.operations;
+    if (operations.length > 1 && operations.includes(previousOperation)) operations = operations.filter(operation => operation !== previousOperation);
+    const operation = operations[Math.min(operations.length - 1, Math.floor(rng() * operations.length))];
+    const choices = [];
     for (let a = c.min; a <= c.max; a++) for (let b = c.min; b <= c.max; b++) {
-      const result = calculate(a, b, c.operation);
-      if (result !== null && result >= 0 && result <= c.maxSum) choices.push({ a, b, result, operation: c.operation });
+      const result = calculate(a, b, operation);
+      if (result !== null && result >= 0 && result <= c.maxSum) choices.push({ a, b, result, operation });
     }
     if (!choices.length) throw new RangeError('Tidak ada pasangan angka yang memenuhi pengaturan.');
-    return choices[Math.min(choices.length - 1, Math.floor((random || Math.random)() * choices.length))];
+    return choices[Math.min(choices.length - 1, Math.floor(rng() * choices.length))];
   }
   function checkAnswer(q, answer) {
     const value = String(answer).trim(), expected = q.result === undefined ? q.sum : q.result;
@@ -51,8 +59,8 @@
     progress.answered = progress.answered === true;
     let question = progress.question;
     if (question && question.result === undefined && question.sum !== undefined) question = { ...question, result: question.sum, operation: question.operation || 'addition' };
-    const expected = question && calculate(question.a, question.b, settings.operation);
-    if (!question || !Number.isInteger(question.a) || !Number.isInteger(question.b) || question.a < settings.min || question.a > settings.max || question.b < settings.min || question.b > settings.max || question.operation !== settings.operation || expected === null || expected < 0 || expected > settings.maxSum || question.result !== expected) {
+    const expected = question && calculate(question.a, question.b, question.operation);
+    if (!question || !Number.isInteger(question.a) || !Number.isInteger(question.b) || question.a < settings.min || question.a > settings.max || question.b < settings.min || question.b > settings.max || !settings.operations.includes(question.operation) || expected === null || expected < 0 || expected > settings.maxSum || question.result !== expected) {
       progress.question = makeQuestion(settings); progress.answer = ''; progress.answered = false;
     } else progress.question = question;
     if (progress.answered && !checkAnswer(progress.question, progress.answer)) { progress.answer = ''; progress.answered = false; }

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff7e8">
-  <meta name="description" content="Latihan penjumlahan sederhana untuk anak, dapat digunakan tanpa internet.">
+  <meta name="description" content="Latihan matematika sederhana untuk anak, dapat digunakan tanpa internet.">
   <title>Matematika Ceria</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -16,7 +16,7 @@
   <main class="app-shell">
     <header class="topbar"><div class="brand"><span class="brand-mark" aria-hidden="true">＋</span><span>Matematika Ceria</span></div><button class="settings-button" id="open-settings" type="button" aria-haspopup="dialog">⚙ <span>Pengaturan Orang Tua</span></button></header>
     <section class="game-card" aria-labelledby="game-title">
-      <div class="progress-row"><span class="eyebrow" id="game-title">LATIHAN PENJUMLAHAN</span><span class="score" aria-live="polite"><span aria-hidden="true">⭐</span> <strong id="stars">0</strong></span></div>
+      <div class="progress-row"><span class="eyebrow" id="game-title">LATIHAN MATEMATIKA</span><span class="score" aria-live="polite"><span aria-hidden="true">⭐</span> <strong id="stars">0</strong></span></div>
       <p class="helper" id="helper">Ayo hitung bersama!</p>
       <div class="problem" aria-label="Soal matematika"><span id="left-number">0</span><span class="operator" id="operation-symbol" aria-hidden="true">+</span><span id="right-number">0</span><span class="operator equals" aria-hidden="true">=</span><span class="answer" id="answer" aria-live="polite">?</span></div>
       <div class="feedback" id="feedback" role="status" aria-live="polite">Pilih angka pada papan di bawah.</div>
@@ -26,9 +26,8 @@
         <button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
         <button type="button" class="clear-key" data-action="clear" aria-label="Hapus jawaban">⌫</button><button type="button" data-digit="0">0</button><button type="button" class="check-key" data-action="check">Cek</button>
       </div>
-      <button type="button" class="next-button" id="next-question" hidden>Soal Berikutnya <span aria-hidden="true">→</span></button>
     </section><footer>Belajar sedikit demi sedikit, kamu pasti bisa! 🌈</footer>
   </main>
-  <dialog id="settings-dialog" aria-labelledby="settings-title"><form id="settings-form"><div class="dialog-heading"><div><span class="eyebrow">KHUSUS ORANG TUA</span><h1 id="settings-title">Atur tingkat latihan</h1></div><button type="button" class="close-button" id="close-settings" aria-label="Tutup">×</button></div><p class="dialog-copy">Pilih operasi dan batas angka untuk soal.</p><label>Operasi matematika<select id="setting-operation"><option value="addition">Pertambahan (+)</option><option value="subtraction">Pengurangan (−)</option><option value="multiplication">Perkalian (×)</option><option value="division">Pembagian (÷)</option></select></label><label>Angka minimum<input type="number" id="setting-min" min="0" max="99" inputmode="numeric" required></label><label>Angka maksimum<input type="number" id="setting-max" min="0" max="99" inputmode="numeric" required></label><label>Hasil maksimum<input type="number" id="setting-sum" min="0" max="198" inputmode="numeric" required></label><p class="form-error" id="settings-error" role="alert"></p><div class="dialog-actions"><button type="button" class="secondary-button" id="cancel-settings">Batal</button><button type="submit" class="save-button">Simpan</button></div></form></dialog>
+  <dialog id="settings-dialog" aria-labelledby="settings-title"><form id="settings-form"><div class="dialog-heading"><div><span class="eyebrow">KHUSUS ORANG TUA</span><h1 id="settings-title">Atur tingkat latihan</h1></div><button type="button" class="close-button" id="close-settings" aria-label="Tutup">×</button></div><p class="dialog-copy">Pilih satu atau beberapa operasi dan batas angka.</p><fieldset class="operation-options"><legend>Operasi matematika</legend><label><input type="checkbox" name="setting-operations" value="addition"> Pertambahan (+)</label><label><input type="checkbox" name="setting-operations" value="subtraction"> Pengurangan (−)</label><label><input type="checkbox" name="setting-operations" value="multiplication"> Perkalian (×)</label><label><input type="checkbox" name="setting-operations" value="division"> Pembagian (÷)</label></fieldset><label>Angka minimum<input type="number" id="setting-min" min="0" max="99" inputmode="numeric" required></label><label>Angka maksimum<input type="number" id="setting-max" min="0" max="99" inputmode="numeric" required></label><label>Hasil maksimum<input type="number" id="setting-sum" min="0" max="198" inputmode="numeric" required></label><label class="voice-option"><input type="checkbox" id="setting-voice"> Suara pujian saat jawaban benar</label><p class="form-error" id="settings-error" role="alert"></p><p id="reset-message" class="reset-message" aria-live="polite"></p><div class="settings-tools"><button type="button" class="secondary-button" id="reset-stars">Reset bintang ke 0</button></div><div class="dialog-actions"><button type="button" class="secondary-button" id="cancel-settings">Batal</button><button type="submit" class="save-button">Simpan</button></div></form></dialog>
 </body>
 </html>
