@@ -1,0 +1,5 @@
+'use strict';
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),root=__dirname;
+const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json; charset=utf-8','.svg':'image/svg+xml'};
+const server=http.createServer((req,res)=>{let pathname;try{pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);}catch(_){res.writeHead(400).end('Bad request');return;}if(pathname.endsWith('/'))pathname+='index.html';const file=path.resolve(root,`.${pathname}`);if(!file.startsWith(`${root}${path.sep}`)&&file!==path.join(root,'index.html')){res.writeHead(403).end('Forbidden');return;}fs.readFile(file,(error,data)=>{if(error){res.writeHead(404).end('Not found');return;}res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-cache'});res.end(data);});});
+server.listen(8080,'0.0.0.0',()=>console.log('Matematika Ceria tersedia di http://localhost:8080'));
