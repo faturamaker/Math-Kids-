@@ -4,6 +4,7 @@
   const $ = id => document.getElementById(id), dialog = $('settings-dialog');
   const symbols = { addition: '+', subtraction: '−', multiplication: '×', division: '÷' };
   const praises = ['Yeay, kamu benar! Anak pintar!', 'Hebat sekali, jawabanmu benar!', 'Wah, kamu keren! Terus semangat ya!', 'Pintar! Kamu berhasil menjawab!'];
+  const retryPhrase = 'Salah, coba hitung lagi.';
   let state;
   try { state = loadState(window.localStorage); } catch (_) { state = loadState({ getItem: () => null }); }
   let { settings, progress } = state, nextQuestionTimer = null;
@@ -20,6 +21,7 @@
     $('operation-symbol').textContent = symbols[progress.question.operation];
     $('answer').textContent = progress.answer || '?';
     $('stars').textContent = progress.stars;
+    $('wrong-count').textContent = progress.wrong;
     document.querySelectorAll('#keypad button').forEach(button => { button.disabled = progress.answered; });
     $('helper').textContent = progress.answered ? 'Hebat! Soal berikutnya sebentar lagi…' : 'Ayo hitung bersama!';
     if (progress.answered) { feedback('Benar! Hebat sekali! ⭐', 'correct'); scheduleNextQuestion(); }
@@ -30,10 +32,10 @@
     progress.answer = ''; progress.answered = false;
     persist(); render(); feedback('Pilih angka pada papan di bawah.');
   }
-  function sayPraise() {
+  function speak(text) {
     if (!settings.voicePraise || !('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(praises[Math.floor(Math.random() * praises.length)]);
+    const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'id-ID'; utterance.rate = 0.95; utterance.pitch = 1.08;
     window.speechSynthesis.speak(utterance);
   }
@@ -47,14 +49,14 @@
     if (button.dataset.action === 'clear') { progress.answer = progress.answer.slice(0, -1); $('answer').textContent = progress.answer || '?'; persist(); }
     if (button.dataset.action === 'check') {
       if (!progress.answer) { feedback('Pilih angka terlebih dahulu.', 'wrong'); return; }
-      if (checkAnswer(progress.question, progress.answer)) { progress.answered = true; progress.stars++; progress.solved++; persist(); render(); sayPraise(); }
-      else feedback('Belum tepat, coba lagi ya! 💪', 'wrong');
+      if (checkAnswer(progress.question, progress.answer)) { progress.answered = true; progress.stars++; progress.solved++; persist(); render(); speak(praises[Math.floor(Math.random() * praises.length)]); }
+      else { progress.wrong++; persist(); $('wrong-count').textContent = progress.wrong; feedback(retryPhrase, 'wrong'); speak(retryPhrase); }
     }
   });
   $('open-settings').addEventListener('click', () => {
     document.querySelectorAll('[name="setting-operations"]').forEach(input => { input.checked = settings.operations.includes(input.value); });
     $('setting-voice').checked = settings.voicePraise;
-    $('setting-min').value = settings.min; $('setting-max').value = settings.max; $('setting-sum').value = settings.maxSum;
+    $('setting-min').value = settings.min; $('setting-max').value = settings.max; $('setting-result-min').value = settings.resultMin; $('setting-sum').value = settings.maxSum;
     $('settings-error').textContent = '';
     if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', '');
   });
@@ -66,9 +68,9 @@
   });
   $('settings-form').addEventListener('submit', event => {
     event.preventDefault();
-    const proposed = { operations: [...document.querySelectorAll('[name="setting-operations"]:checked')].map(input => input.value), voicePraise: $('setting-voice').checked, min: Number($('setting-min').value), max: Number($('setting-max').value), maxSum: Number($('setting-sum').value) };
+    const proposed = { operations: [...document.querySelectorAll('[name="setting-operations"]:checked')].map(input => input.value), voicePraise: $('setting-voice').checked, min: Number($('setting-min').value), max: Number($('setting-max').value), resultMin: Number($('setting-result-min').value), maxSum: Number($('setting-sum').value) };
     if (!isValidSettings(proposed)) {
-      $('settings-error').textContent = 'Pilih setidaknya satu operasi dan pastikan batas angka menghasilkan soal yang valid untuk semua operasi terpilih. Pembagian harus tepat dan tidak dapat memakai pembagi nol.';
+      $('settings-error').textContent = 'Pilih setidaknya satu operasi dan pastikan ada soal dengan hasil di antara batas minimum dan maksimum. Pembagian harus tepat dan tidak dapat memakai pembagi nol.';
       return;
     }
     clearNextTimer(); settings = proposed; progress.question = makeQuestion(settings, Math.random, progress.question && progress.question.operation); progress.answer = ''; progress.answered = false;

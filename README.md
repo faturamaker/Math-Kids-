@@ -1,6 +1,6 @@
 # Matematika Ceria
 
-Aplikasi latihan matematika anak berbasis HTML, CSS, dan JavaScript. Orang tua dapat memilih satu atau beberapa operasi untuk satu sesi; jika beberapa dipilih, aplikasi berganti operasi di antara soal. Bintang dapat direset dari pengaturan. Suara pujian dapat dinyalakan atau dimatikan dan menggunakan fitur suara bawaan browser. Soal berikutnya tampil otomatis dua detik setelah jawaban benar. Tidak memakai backend atau layanan eksternal. Pengaturan serta progres disimpan di browser menggunakan `localStorage`.
+Aplikasi latihan matematika anak berbasis HTML, CSS, dan JavaScript dengan tampilan papan tulis. Orang tua dapat memilih satu atau beberapa operasi untuk satu sesi dan mengatur batas angka serta hasil minimum/maksimum. Jumlah bintang dan jawaban salah ditampilkan; bintang dapat direset. Ucapan untuk jawaban benar dan salah dapat dinyalakan atau dimatikan menggunakan fitur suara bawaan browser. Soal berikutnya tampil otomatis dua detik setelah jawaban benar. Tidak memakai backend atau layanan eksternal. Pengaturan serta progres disimpan di browser menggunakan `localStorage`.
 
 ## Menjalankan di Windows
 
@@ -25,5 +25,5 @@ Anda dapat memakai GitHub Pages: buat repositori publik, unggah berkas proyek, l
 
 - `index.html`, `styles.css`, `app.js`: tampilan dan interaksi.
 - `game-logic.js`: pembangkitan soal untuk operasi terpilih, validasi batas, serta penyimpanan.
-- `manifest.webmanifest`, `service-worker.js`, `icon.svg`, `icon-192.png`, `icon-512.png`: dukungan PWA dan cache offline.
+- `manifest.webmanifest`, `service-worker.js`, `icon-source.jpg`, `icon-192.png`, `icon-512.png`: dukungan PWA dan cache offline.
 - `tests/game-logic.test.js`: tes otomatis dengan Node.js.
