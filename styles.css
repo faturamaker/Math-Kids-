@@ -4,3 +4,26 @@ dialog{width:min(100% - 28px,450px);max-height:min(92dvh,850px);overflow:auto;bo
 @media(max-width:620px){.app-shell{width:min(100% - 18px,1120px)}.topbar{height:68px}.brand{gap:8px;font-size:17px}.brand-mark{width:35px;height:35px}.header-doodles{display:none}.settings-button{min-height:41px;padding:0 9px;font-size:11px}.settings-button span:first-child{font-size:15px}.game-card{padding:10px;border-radius:14px}.chalk-frame{min-height:0;border-width:6px}.board-content{padding:20px 15px 19px}.progress-row{min-height:45px}.score{font-size:18px}.stars-score span{font-size:24px}.helper{margin:22px 0 16px}.problem{font-size:clamp(51px,12vw,75px);gap:9px}.answer{min-width:57px;min-height:68px}.feedback{margin:15px 0 10px}.keypad{gap:8px;padding:13px 0 0}.keypad button{width:min(72px,19vw);height:min(72px,19vw);min-width:53px;min-height:53px}.keypad .check-key{width:min(125px,35vw)}footer{min-height:45px;padding:8px 5px 16px;font-size:12px}footer small{font-size:10px;right:10px;bottom:7px}}
 @media(min-width:700px) and (min-height:850px){.topbar{height:95px}.chalk-frame{min-height:680px;display:grid;align-items:center}.board-content{width:100%}.keypad button{width:88px;height:88px}.keypad .check-key{width:160px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+/* Keep parent controls comfortable to use on narrow phone screens. */
+@media(max-width:620px){
+  .settings-button{min-height:46px;padding:0 12px;font-size:14px;white-space:nowrap}
+  .settings-button span:first-child{font-size:18px}
+  .helper{font-size:clamp(20px,5.2vw,24px);margin:24px 0 18px}
+  footer{font-size:15px}
+  footer small{font-size:14px;right:12px;bottom:9px;letter-spacing:.35px}
+  dialog{width:calc(100% - 24px);max-height:calc(100dvh - 28px);border-radius:18px}
+  #settings-form{padding:20px}
+  .dialog-heading h1{font-size:25px}
+  .dialog-heading .eyebrow{font-size:14px}
+  .dialog-copy{font-size:16px;line-height:1.4}
+  .operation-options{padding:10px 14px;margin:12px 0 16px}
+  .operation-options legend{font-size:15px}
+  .operation-options label,#settings-form label.voice-option{gap:11px;margin:9px 0;font-size:16px;line-height:1.35}
+  .operation-options input[type=checkbox],#settings-form input[type=checkbox]{width:22px;min-width:22px;height:22px}
+  #settings-form>label:not(.voice-option){gap:8px;margin:13px 0;font-size:15px}
+  #settings-form input[type=number]{width:96px;height:46px;font-size:17px}
+  .secondary-button,.save-button{min-height:46px;padding:12px 15px;font-size:15px}
+  .reset-message,.form-error{font-size:14px}
+}
+
