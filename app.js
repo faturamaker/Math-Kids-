@@ -3,8 +3,8 @@
   const { makeQuestion, checkAnswer, loadState, saveState, isValidSettings } = window.MathKids;
   const $ = id => document.getElementById(id), dialog = $('settings-dialog');
   const symbols = { addition: '+', subtraction: '−', multiplication: '×', division: '÷' };
-  const praises = ['Yeay, kamu benar! Anak pintar!', 'Hebat sekali, jawabanmu benar!', 'Wah, kamu keren! Terus semangat ya!', 'Pintar! Kamu berhasil menjawab!'];
-  const retryPhrase = 'Salah, coba hitung lagi.';
+  const correctAudio = new Audio('./betul.mp3');
+  const wrongAudio = new Audio('./salah.mp3');
   let state;
   try { state = loadState(window.localStorage); } catch (_) { state = loadState({ getItem: () => null }); }
   let { settings, progress } = state, nextQuestionTimer = null;
@@ -13,7 +13,7 @@
   function clearNextTimer() { if (nextQuestionTimer !== null) { window.clearTimeout(nextQuestionTimer); nextQuestionTimer = null; } }
   function scheduleNextQuestion() {
     clearNextTimer();
-    nextQuestionTimer = window.setTimeout(() => { nextQuestionTimer = null; if (progress.answered) newQuestion(); }, 2000);
+    nextQuestionTimer = window.setTimeout(() => { nextQuestionTimer = null; if (progress.answered) newQuestion(); }, 1000);
   }
   function render() {
     $('left-number').textContent = progress.question.a;
@@ -32,12 +32,11 @@
     progress.answer = ''; progress.answered = false;
     persist(); render(); feedback('Pilih angka pada papan di bawah.');
   }
-  function speak(text) {
-    if (!settings.voicePraise || !('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'id-ID'; utterance.rate = 0.95; utterance.pitch = 1.08;
-    window.speechSynthesis.speak(utterance);
+  function playFeedbackAudio(audio) {
+    if (!settings.voicePraise) return;
+    audio.pause(); audio.currentTime = 0;
+    const playback = audio.play();
+    if (playback && typeof playback.catch === 'function') playback.catch(() => {});
   }
   $('keypad').addEventListener('click', event => {
     const button = event.target.closest('button');
@@ -49,8 +48,8 @@
     if (button.dataset.action === 'clear') { progress.answer = progress.answer.slice(0, -1); $('answer').textContent = progress.answer || '?'; persist(); }
     if (button.dataset.action === 'check') {
       if (!progress.answer) { feedback('Pilih angka terlebih dahulu.', 'wrong'); return; }
-      if (checkAnswer(progress.question, progress.answer)) { progress.answered = true; progress.stars++; progress.solved++; persist(); render(); speak(praises[Math.floor(Math.random() * praises.length)]); }
-      else { progress.wrong++; persist(); $('wrong-count').textContent = progress.wrong; feedback(retryPhrase, 'wrong'); speak(retryPhrase); }
+      if (checkAnswer(progress.question, progress.answer)) { progress.answered = true; progress.stars++; progress.solved++; persist(); render(); playFeedbackAudio(correctAudio); }
+      else { progress.wrong++; persist(); $('wrong-count').textContent = progress.wrong; feedback('Salah, coba hitung lagi.', 'wrong'); playFeedbackAudio(wrongAudio); }
     }
   });
   $('open-settings').addEventListener('click', () => {
@@ -64,7 +63,7 @@
   $('close-settings').addEventListener('click', closeDialog); $('cancel-settings').addEventListener('click', closeDialog);
   $('reset-stars').addEventListener('click', () => {
     if (!window.confirm('Reset semua bintang menjadi 0?')) return;
-    progress.stars = 0; persist(); $('stars').textContent = '0'; $('reset-message').textContent = 'Bintang sudah direset ke 0.';
+    progress.stars = 0; progress.wrong = 0; persist(); $('stars').textContent = '0'; $('wrong-count').textContent = '0'; $('reset-message').textContent = 'Counter bintang dan jawaban salah sudah direset ke 0.';
   });
   $('settings-form').addEventListener('submit', event => {
     event.preventDefault();
@@ -79,3 +78,4 @@
   render();
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
 })();
+
