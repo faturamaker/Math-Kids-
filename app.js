@@ -52,10 +52,10 @@
     const button = event.target.closest('button');
     if (!button || progress.answered) return;
     if (button.dataset.digit !== undefined) {
-      if (progress.answer.length < 3) progress.answer += button.dataset.digit;
-      $('answer').textContent = progress.answer || '?'; persist();
+      if (progress.answer.length < 6) progress.answer += button.dataset.digit;
+      $('answer').textContent = progress.answer || '?'; $('column-answer').textContent = progress.answer || '?'; persist();
     }
-    if (button.dataset.action === 'clear') { progress.answer = progress.answer.slice(0, -1); $('answer').textContent = progress.answer || '?'; persist(); }
+    if (button.dataset.action === 'clear') { progress.answer = progress.answer.slice(0, -1); $('answer').textContent = progress.answer || '?'; $('column-answer').textContent = progress.answer || '?'; persist(); }
     if (button.dataset.action === 'check') {
       if (!progress.answer) { feedback('Pilih angka terlebih dahulu.', 'wrong'); return; }
       if (checkAnswer(progress.question, progress.answer)) { progress.answered = true; progress.stars++; progress.solved++; persist(); render(); playFeedbackAudio(correctAudio); }
@@ -68,8 +68,7 @@
     $('setting-model-susun').checked = settings.questionModel === 'susun';
     $('setting-voice').checked = settings.voicePraise;
     $('setting-min').value = settings.min; $('setting-max').value = settings.max; $('setting-result-min').value = settings.resultMin; $('setting-sum').value = settings.maxSum;
-    $('setting-top-min-digits').value = settings.topMinDigits; $('setting-top-max-digits').value = settings.topMaxDigits;
-    $('setting-bottom-min-digits').value = settings.bottomMinDigits; $('setting-bottom-max-digits').value = settings.bottomMaxDigits;
+    $('setting-top-digits').value = settings.topDigits; $('setting-bottom-digits').value = settings.bottomDigits;
     renderModelFields();
     $('settings-error').textContent = '';
     if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', '');
@@ -83,7 +82,7 @@
   });
   $('settings-form').addEventListener('submit', event => {
     event.preventDefault();
-    const proposed = { operations: [...document.querySelectorAll('[name="setting-operations"]:checked')].map(input => input.value), voicePraise: $('setting-voice').checked, questionModel: $('setting-model-susun').checked ? 'susun' : 'standard', min: Number($('setting-min').value), max: Number($('setting-max').value), resultMin: Number($('setting-result-min').value), maxSum: Number($('setting-sum').value), topMinDigits: Number($('setting-top-min-digits').value), topMaxDigits: Number($('setting-top-max-digits').value), bottomMinDigits: Number($('setting-bottom-min-digits').value), bottomMaxDigits: Number($('setting-bottom-max-digits').value) };
+    const proposed = { operations: [...document.querySelectorAll('[name="setting-operations"]:checked')].map(input => input.value), voicePraise: $('setting-voice').checked, questionModel: $('setting-model-susun').checked ? 'susun' : 'standard', min: Number($('setting-min').value), max: Number($('setting-max').value), resultMin: Number($('setting-result-min').value), maxSum: Number($('setting-sum').value), topDigits: Number($('setting-top-digits').value), bottomDigits: Number($('setting-bottom-digits').value) };
     if (!isValidSettings(proposed)) {
       $('settings-error').textContent = 'Pilih setidaknya satu operasi dan pastikan ada soal dengan hasil di antara batas minimum dan maksimum. Pembagian harus tepat dan tidak dapat memakai pembagi nol.';
       return;

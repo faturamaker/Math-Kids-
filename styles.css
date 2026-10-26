@@ -13,7 +13,8 @@ dialog{width:min(100% - 28px,450px);max-height:min(92dvh,850px);overflow:auto;bo
 .column-row{grid-column:1 / -1;display:grid;grid-template-columns:4ch 1.4ch;align-items:center}
 .column-row span:first-child{grid-column:1;justify-self:end}
 .column-operation{grid-column:2;justify-self:end;color:#f47c79}
-.column-answer{grid-column:1 / -1;min-height:1.2em;border-bottom:3px dashed #f4da62;text-align:right;padding-right:.08em;color:#f4da62;font-size:.78em;line-height:1.35}
+.column-divider{grid-column:1 / -1;border-bottom:3px solid #f4da62;margin:3px 0 0;box-shadow:0 2px 0 #fff5}
+.column-answer{grid-column:1 / -1;min-height:1.2em;text-align:right;padding-right:.08em;color:#f4da62;font-size:.78em;line-height:1.35}
 .model-options{border:1px solid #e1e4eb;border-radius:13px;padding:8px 13px;margin:10px 0 14px}
 .model-options legend{font-size:14px;font-weight:900;padding:0 5px}
 .model-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -21,6 +22,7 @@ dialog{width:min(100% - 28px,450px);max-height:min(92dvh,850px);overflow:auto;bo
 .model-tabs input{width:18px;height:18px;margin:0;accent-color:#6a5ae0}
 .range-hint{font-size:13px;color:#788398;margin:4px 0 10px}
 #standard-range-fields>label,#column-range-fields>label{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:11px 0;font-size:14px;font-weight:800}
+#settings-form select{width:180px;min-height:42px;border:1.5px solid #e8eaf1;border-radius:10px;padding:0 10px;font:inherit;font-size:15px;color:#26324a;background:#fff}
 @media(max-width:620px){
   .column-problem{font-size:clamp(54px,13vw,76px);margin:5px auto 12px}
   .model-options{padding:9px 12px;margin:10px 0 13px}
@@ -49,6 +51,7 @@ dialog{width:min(100% - 28px,450px);max-height:min(92dvh,850px);overflow:auto;bo
   .operation-options input[type=checkbox],#settings-form input[type=checkbox]{width:22px;min-width:22px;height:22px}
   #settings-form>label:not(.voice-option){gap:8px;margin:13px 0;font-size:15px}
   #settings-form input[type=number]{width:96px;height:46px;font-size:17px}
+  #settings-form select{width:180px;min-height:46px;font-size:14px}
   .secondary-button,.save-button{min-height:46px;padding:12px 15px;font-size:15px}
   .reset-message,.form-error{font-size:14px}
 }
