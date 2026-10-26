@@ -5,6 +5,32 @@ dialog{width:min(100% - 28px,450px);max-height:min(92dvh,850px);overflow:auto;bo
 @media(min-width:700px) and (min-height:850px){.topbar{height:95px}.chalk-frame{min-height:680px;display:grid;align-items:center}.board-content{width:100%}.keypad button{width:88px;height:88px}.keypad .check-key{width:160px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 
+.standard-problem{display:flex;justify-content:center;align-items:center;gap:clamp(7px,2vw,22px)}
+.problem.is-column{letter-spacing:0}
+.problem.is-column .standard-problem{display:none}
+.column-problem{display:none;grid-template-columns:4ch 1.4ch;gap:0;width:max-content;margin:8px auto 14px;font-family:ui-monospace,"Courier New",monospace;font-size:clamp(58px,10vw,88px);font-weight:800;line-height:1.08;letter-spacing:0;color:#f7f5e9}
+.problem.is-column .column-problem{display:grid}
+.column-row{grid-column:1 / -1;display:grid;grid-template-columns:4ch 1.4ch;align-items:center}
+.column-row span:first-child{grid-column:1;justify-self:end}
+.column-operation{grid-column:2;justify-self:end;color:#f47c79}
+.column-answer{grid-column:1 / -1;min-height:1.2em;border-bottom:3px dashed #f4da62;text-align:right;padding-right:.08em;color:#f4da62;font-size:.78em;line-height:1.35}
+.model-options{border:1px solid #e1e4eb;border-radius:13px;padding:8px 13px;margin:10px 0 14px}
+.model-options legend{font-size:14px;font-weight:900;padding:0 5px}
+.model-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.model-tabs label{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;border-radius:10px;background:#f0f1f6;font-size:14px;font-weight:800;cursor:pointer}
+.model-tabs input{width:18px;height:18px;margin:0;accent-color:#6a5ae0}
+.range-hint{font-size:13px;color:#788398;margin:4px 0 10px}
+#standard-range-fields>label,#column-range-fields>label{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:11px 0;font-size:14px;font-weight:800}
+@media(max-width:620px){
+  .column-problem{font-size:clamp(54px,13vw,76px);margin:5px auto 12px}
+  .model-options{padding:9px 12px;margin:10px 0 13px}
+  .model-options legend{font-size:15px}
+  .model-tabs label{min-height:46px;font-size:16px}
+  .model-tabs input{width:21px;height:21px}
+  .range-hint{font-size:14px}
+  #standard-range-fields>label,#column-range-fields>label{gap:7px;margin:12px 0;font-size:14px}
+}
+
 /* Keep parent controls comfortable to use on narrow phone screens. */
 @media(max-width:620px){
   .settings-button{min-height:46px;padding:0 12px;font-size:14px;white-space:nowrap}

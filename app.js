@@ -19,7 +19,12 @@
     $('left-number').textContent = progress.question.a;
     $('right-number').textContent = progress.question.b;
     $('operation-symbol').textContent = symbols[progress.question.operation];
+    $('column-top-number').textContent = progress.question.a;
+    $('column-bottom-number').textContent = progress.question.b;
+    $('column-operation').textContent = symbols[progress.question.operation];
+    $('problem').classList.toggle('is-column', settings.questionModel === 'susun');
     $('answer').textContent = progress.answer || '?';
+    $('column-answer').textContent = progress.answer || '?';
     $('stars').textContent = progress.stars;
     $('wrong-count').textContent = progress.wrong;
     document.querySelectorAll('#keypad button').forEach(button => { button.disabled = progress.answered; });
@@ -38,6 +43,11 @@
     const playback = audio.play();
     if (playback && typeof playback.catch === 'function') playback.catch(() => {});
   }
+  function renderModelFields() {
+    const isColumn = $('setting-model-susun').checked;
+    $('standard-range-fields').hidden = isColumn;
+    $('column-range-fields').hidden = !isColumn;
+  }
   $('keypad').addEventListener('click', event => {
     const button = event.target.closest('button');
     if (!button || progress.answered) return;
@@ -54,11 +64,17 @@
   });
   $('open-settings').addEventListener('click', () => {
     document.querySelectorAll('[name="setting-operations"]').forEach(input => { input.checked = settings.operations.includes(input.value); });
+    $('setting-model-standard').checked = settings.questionModel === 'standard';
+    $('setting-model-susun').checked = settings.questionModel === 'susun';
     $('setting-voice').checked = settings.voicePraise;
     $('setting-min').value = settings.min; $('setting-max').value = settings.max; $('setting-result-min').value = settings.resultMin; $('setting-sum').value = settings.maxSum;
+    $('setting-top-min-digits').value = settings.topMinDigits; $('setting-top-max-digits').value = settings.topMaxDigits;
+    $('setting-bottom-min-digits').value = settings.bottomMinDigits; $('setting-bottom-max-digits').value = settings.bottomMaxDigits;
+    renderModelFields();
     $('settings-error').textContent = '';
     if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', '');
   });
+  document.querySelectorAll('[name="setting-model"]').forEach(input => input.addEventListener('change', renderModelFields));
   function closeDialog() { if (dialog.close) dialog.close(); else dialog.removeAttribute('open'); }
   $('close-settings').addEventListener('click', closeDialog); $('cancel-settings').addEventListener('click', closeDialog);
   $('reset-stars').addEventListener('click', () => {
@@ -67,7 +83,7 @@
   });
   $('settings-form').addEventListener('submit', event => {
     event.preventDefault();
-    const proposed = { operations: [...document.querySelectorAll('[name="setting-operations"]:checked')].map(input => input.value), voicePraise: $('setting-voice').checked, min: Number($('setting-min').value), max: Number($('setting-max').value), resultMin: Number($('setting-result-min').value), maxSum: Number($('setting-sum').value) };
+    const proposed = { operations: [...document.querySelectorAll('[name="setting-operations"]:checked')].map(input => input.value), voicePraise: $('setting-voice').checked, questionModel: $('setting-model-susun').checked ? 'susun' : 'standard', min: Number($('setting-min').value), max: Number($('setting-max').value), resultMin: Number($('setting-result-min').value), maxSum: Number($('setting-sum').value), topMinDigits: Number($('setting-top-min-digits').value), topMaxDigits: Number($('setting-top-max-digits').value), bottomMinDigits: Number($('setting-bottom-min-digits').value), bottomMaxDigits: Number($('setting-bottom-max-digits').value) };
     if (!isValidSettings(proposed)) {
       $('settings-error').textContent = 'Pilih setidaknya satu operasi dan pastikan ada soal dengan hasil di antara batas minimum dan maksimum. Pembagian harus tepat dan tidak dapat memakai pembagi nol.';
       return;
