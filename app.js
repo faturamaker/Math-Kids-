@@ -62,7 +62,7 @@
   function closeDialog() { if (dialog.close) dialog.close(); else dialog.removeAttribute('open'); }
   $('close-settings').addEventListener('click', closeDialog); $('cancel-settings').addEventListener('click', closeDialog);
   $('reset-stars').addEventListener('click', () => {
-    if (!window.confirm('Reset semua bintang menjadi 0?')) return;
+    if (!window.confirm('Reset counter bintang dan jawaban salah menjadi 0?')) return;
     progress.stars = 0; progress.wrong = 0; persist(); $('stars').textContent = '0'; $('wrong-count').textContent = '0'; $('reset-message').textContent = 'Counter bintang dan jawaban salah sudah direset ke 0.';
   });
   $('settings-form').addEventListener('submit', event => {
